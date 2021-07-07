@@ -46,8 +46,8 @@ validation_data_dir = './data/validation/'
 # Input the size of your sample images
 img_width, img_height = 150, 150
 # Enter the number of samples, training + validation
-nb_train_samples = 13204
-nb_validation_samples = 1412
+nb_train_samples = 9453
+nb_validation_samples = 2013
 nb_filters1 = 32
 nb_filters2 = 32
 nb_filters3 = 64
