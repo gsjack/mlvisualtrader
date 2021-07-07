@@ -2,14 +2,14 @@ import os
 import numpy as np
 #os.environ["KERAS_BACKEND"] = "plaidml.keras.backend"
 
-from keras.preprocessing.image import ImageDataGenerator, load_img, img_to_array
-from keras.models import Sequential, load_model
+from tensorflow.keras.preprocessing.image import ImageDataGenerator, load_img, img_to_array
+from tensorflow.keras.models import Sequential, load_model
 
 
 img_width, img_height = 150, 150
 model_path = '../src/models/model.h5'
 weights_path = '../src/models/weights'
-model = load_model(model_path)
+model = load_model('C://mlvisualtrader//src//models//model.h5')
 test_path = '../data/validation'
 
 def predict(file):
@@ -47,7 +47,7 @@ fb = 0
 fs = 0
 na = 0
 
-for i, ret in enumerate(os.walk(data_path + '/test/buy')):
+for i, ret in enumerate(os.walk('C://mlvisualtrader//data//predictbuy//')):
   for i, filename in enumerate(ret[2]):
     if filename.startswith("."):
       continue
@@ -61,7 +61,7 @@ for i, ret in enumerate(os.walk(data_path + '/test/buy')):
     else:
       fb += 1
 
-for i, ret in enumerate(os.walk(data_path + '/test/sell')):
+for i, ret in enumerate(os.walk('C://mlvisualtrader//data//predictsell//')):
   for i, filename in enumerate(ret[2]):
     if filename.startswith("."):
       continue
