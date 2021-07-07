@@ -6,7 +6,8 @@ import uuid
 
 # Input your csv file here with historical data
 
-ad = genfromtxt(r'C:/inpredo/inpredo/financial_data/eurusd.csv', delimiter=',' ,dtype=str)
+ad = genfromtxt(r'C:/mlvisualtrader/financial_data/gemini_BTCUSD_1hr.csv', delimiter=',' ,dtype=str)
+ad = np.delete(ad,0,1)
 pd = np.flipud(ad)
 
 buy_dir = 'C://mlvisualtrader//data//train//buy//'
