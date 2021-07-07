@@ -5,8 +5,20 @@ import numpy as np
 import uuid
 
 # Input your csv file here with historical data
+def timeConversion(s):
+   if s[-2:] == "AM" :
+      if s[:2] == '12':
+          a = str('00' + s[2:8])
+      else:
+          a = s[:-2]
+   else:
+      if s[:2] == '12':
+          a = s[:-2]
+      else:
+          a = str(int(s[:2]) + 12) + s[2:8]
+   return a
 
-ad = genfromtxt(r'C:/mlvisualtrader/financial_data/gemini_BTCUSD_1hr.csv', delimiter=',' ,dtype=str)
+ad = genfromtxt(r'C:/mlvisualtrader/financial_data/Binance_BTCUSDT_1h.csv', delimiter=',' ,dtype=str)
 ad = np.delete(ad,0,1)
 pd = np.flipud(ad)
 
@@ -42,14 +54,16 @@ def graphwerk(start, finish):
     sma = convolve_sma(close, 6)
     smb = list(sma)
     diff = sma[-1] - sma[-2]
+
     for x in range(len(close)-len(smb)):
         smb.append(smb[-1]+diff)
 
     smalong = convolve_sma(close, 12)
     smblong = list(smalong)
-    diff = smalong[-1] - smalong[-2]
-    for x in range(len(close)-len(smblong)):
-        smblong.append(smblong[-1]+diff)
+    #difflong = smalong[-1] - smalong[-2]
+
+    #for x in range(len(close)-len(smblong)):
+    #    smblong.append(smblong[-1]+difflong)
 
     fig = plt.figure(num=1, figsize=(3, 3), dpi=50, facecolor='w', edgecolor='k')
     dx = fig.add_subplot(111)
@@ -58,7 +72,7 @@ def graphwerk(start, finish):
 
     plt.autoscale()
     plt.plot(smb, color="blue", linewidth=10, alpha=0.5)
-    plt.plot(smblong, color="black", linewidth=10, alpha=0.5)
+    #plt.plot(smblong, color="black", linewidth=10, alpha=0.5)
     plt.axis('off')
     comp_ratio = close_next / close[-1]
     print(comp_ratio)
@@ -68,12 +82,7 @@ def graphwerk(start, finish):
             print('next value: ' + str(close_next))
             print('buy')
             plt.savefig(buy_dir + str(uuid.uuid4()) +'.jpg', bbox_inches='tight')
-    elif close[-1] > close_next:
-            print('last value: '+ str(close[-1]))
-            print('next value: ' + str(close_next))
-            print('sell')
-            plt.savefig(sell_dir + str(uuid.uuid4())+'.jpg', bbox_inches='tight')
-    elif close[-2] > close_next:
+    elif close[-3]*1.01 > close_next and close[-2] > close_next and close[-1] > close_next:
             print('last value: '+ str(close[-1]))
             print('next value: ' + str(close_next))
             print('sell')
@@ -86,7 +95,7 @@ def graphwerk(start, finish):
             plt.savefig(neutral_dir + str(uuid.uuid4())+'.jpg', bbox_inches='tight')
 
 
-    plt.show()
+    #plt.show()
     open.clear()
     close.clear()
     volume.clear()
