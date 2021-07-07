@@ -19,7 +19,7 @@ def predict(file):
   array = model.predict(x)
   result = array[0]
   if result[0] > result[1]:
-    if result[0] > 0.9:
+    if result[0] > 0.98:
       print("Predicted answer: Buy")
       answer = 'buy'
       print(result)
@@ -29,7 +29,7 @@ def predict(file):
       answer = 'n/a'
       print(result)
   else:
-    if result[1] > 0.9:
+    if result[1] > 0.98:
       print("Predicted answer: Sell")
       answer = 'sell'
       print(result)
