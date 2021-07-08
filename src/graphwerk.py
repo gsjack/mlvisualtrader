@@ -4,7 +4,7 @@ import mpl_finance
 import numpy as np
 import uuid
 
-ad = genfromtxt(r'C:/mlvisualtrader/financial_data/Binance_BTCUSDT_1h_Backtest.csv', delimiter=',' ,dtype=str)
+ad = genfromtxt(r'C:/mlvisualtrader/financial_data/Binance_BTCUSDT_1h_Future.csv', delimiter=',' ,dtype=str)
 ad = np.delete(ad,0,1)
 pd = np.flipud(ad)
 

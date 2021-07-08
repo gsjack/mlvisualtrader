@@ -46,8 +46,8 @@ validation_data_dir = './data/validation/'
 # Input the size of your sample images
 img_width, img_height = 150, 150
 # Enter the number of samples, training + validation
-nb_train_samples = 15974
-nb_validation_samples = 1991
+nb_train_samples = 16544
+nb_validation_samples = 1422
 nb_filters1 = 32
 nb_filters2 = 32
 nb_filters3 = 64
@@ -126,8 +126,7 @@ model.fit(
     steps_per_epoch=nb_train_samples//batch_size,
     epochs=epochs,
     shuffle=True,
-    #validation_data=validation_generator,
-    validation_split=0.1,
+    validation_data=validation_generator,
     callbacks=callbacks_list,
     validation_steps=nb_validation_samples//batch_size)
 
