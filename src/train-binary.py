@@ -46,8 +46,8 @@ validation_data_dir = './data/validation/'
 # Input the size of your sample images
 img_width, img_height = 150, 150
 # Enter the number of samples, training + validation
-nb_train_samples = 5445
-nb_validation_samples = 473
+nb_train_samples = 15974
+nb_validation_samples = 1991
 nb_filters1 = 32
 nb_filters2 = 32
 nb_filters3 = 64
@@ -56,7 +56,7 @@ conv2_size = 2
 conv3_size = 5
 pool_size = 2
 # We have 2 classes, buy and sell
-classes_num = 2
+classes_num = 3
 batch_size = 128
 lr = 0.001
 chanDim =3
@@ -126,7 +126,8 @@ model.fit(
     steps_per_epoch=nb_train_samples//batch_size,
     epochs=epochs,
     shuffle=True,
-    validation_data=validation_generator,
+    #validation_data=validation_generator,
+    validation_split=0.1,
     callbacks=callbacks_list,
     validation_steps=nb_validation_samples//batch_size)
 
