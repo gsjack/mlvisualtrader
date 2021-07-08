@@ -58,6 +58,6 @@ trading_options:
   TRAILING_TAKE_PROFIT: .1
   
   SIGNALLING_MODULES:
-    - signalsamplemod
+    - signalsample
     
   

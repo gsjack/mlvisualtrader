@@ -38,14 +38,6 @@ from helpers.handle_creds import (
     load_correct_creds
 )
 
-import numpy as np
-#os.environ["KERAS_BACKEND"] = "plaidml.keras.backend"
-
-from tensorflow.keras.preprocessing.image import ImageDataGenerator, load_img, img_to_array
-from tensorflow.keras.models import Sequential, load_model
-import matplotlib.pyplot as plt
-import mpl_finance
-
 # for colourful logging to the console
 class txcolors:
     BUY = '\033[92m'
@@ -83,39 +75,8 @@ sys.stdout = St_ampe_dOut()
 
 
 
-img_width, img_height = 150, 150
-model_path = '../src/models/model.h5'
-weights_path = '../src/models/weights'
-model = load_model('C://mlvisualtrader//src//models//model.h5')
-#test_path = '../data/validation'
 
-def predict(file):
-  x = load_img(file, target_size=(img_width,img_height))
-  x = img_to_array(x)
-  x = np.expand_dims(x, axis=0)
-  array = model.predict(x)
-  result = array[0]
-  if result[0] > result[1]:
-    if result[0] > 0.001:
-      print("Predicted answer: Buy")
-      answer = 'buy'
-      print(result)
-      print(array)
-    else:
-      print("Predicted answer: Not confident")
-      answer = 'n/a'
-      print(result)
-  else:
-    if result[1] > 0.001:
-      print("Predicted answer: Sell")
-      answer = 'sell'
-      print(result)
-    else:
-      print("Predicted answer: Not confident")
-      answer = 'n/a'
-      print(result)
 
-  return answer
 
 def get_price(add_to_historical=True):
     '''Return the current price for all coins on binance'''
@@ -140,8 +101,7 @@ def get_price(add_to_historical=True):
 
     return initial_price
 
-def convolve_sma(array, period):
-    return np.convolve(array, np.ones((period,))/period, mode='valid')
+
 
 def wait_for_price():
     '''calls the initial price and ensures the correct amount of time has passed
@@ -166,94 +126,6 @@ def wait_for_price():
 
     # retreive latest prices
     get_price()
-
-
-
-    open = []
-    high = []
-    low = []
-    close = []
-    volume = []
-    date = []
-    hlc3 = []
-    startkurz = 0
-
-    open_val = []
-    high_val = []
-    low_val = []
-    close_val = []
-    volume2 = []                                                            #KLINE_INTERVAL_1DAY
-                                                                              #KLINE_INTERVAL_4HOUR
-    for kline in client.get_historical_klines_generator("BTCUSDT", Client.KLINE_INTERVAL_1MINUTE, "12 minutes ago UTC"):
-              
-
-        #Adds ohlc values to lists
-        open_val.append(float(kline[1]))
-        high_val.append(float(kline[2]))
-        low_val.append(float(kline[3]))
-        close_val.append(float(kline[4]))
-        volume2.append(float(kline[5]))
-        hlc3temp = (float(kline[2]) + float(kline[3]) + float(kline[4]))/3
-        hlc3.append(hlc3temp)
-        open_val = np.flipud(open_val)
-        high_val = np.flipud(high_val)
-        low_val = np.flipud(low_val)
-        close_val = np.flipud(close_val)
-        hlc3 = np.flipud(hlc3)
-
-
-
-    sma = convolve_sma(hlc3, 7)
-    smb = list(sma)
-    diff = sma[-1] - sma[-2]
-
-    for x in range(len(close)-len(smb)):
-        smb.append(smb[-1]+diff)
-
-    fig = plt.figure(num=1, figsize=(3, 3), dpi=50, facecolor='w', edgecolor='k')
-    dx = fig.add_subplot(111)
-    dx.grid(False)
-    dx.set_xticklabels([])
-    dx.set_yticklabels([])
-    dx.xaxis.set_visible(False)
-    dx.yaxis.set_visible(False)
-    dx.axis('off')
-    ax2 = dx.twinx()
-    a = mpl_finance.volume_overlay(ax2, open_val, close_val, volume2, width=0.4, colorup='b', colordown='b', alpha=0)
-    ax2.add_collection(a)
-    ax2.grid(False)
-    ax2.set_xticklabels([])
-    ax2.set_yticklabels([])
-    ax2.xaxis.set_visible(False)
-    ax2.yaxis.set_visible(False)
-    ax2.axis('off')
-    mpl_finance.candlestick2_ochl(dx,open_val, close_val, high_val, low_val, width=1.5, colorup='g', colordown='r', alpha=0.5)
-
-    plt.autoscale()
-    plt.autoscale(ax2)
-    plt.plot(smb, color="blue", linewidth=10, alpha=0.5)
-    #plt.plot(smblong, color="black", linewidth=10, alpha=0.5)
-    plt.axis('off')
-    plt.show()
-    plt.savefig('live' +'.jpg', bbox_inches='tight')
-
-    open.clear()
-    close.clear()
-    volume2.clear()
-    high.clear()
-    low.clear()
-    hlc3.clear()
-    plt.cla()
-    plt.clf()
-
-    result = predict('live.jpg')
-    if result == "buy":
-      print('buy')
-    elif result == 'n/a':
-      print('neutral')
-    else:
-      print('sell')
-
 
     # calculate the difference in prices
     for coin in historical_prices[hsp_head]:
