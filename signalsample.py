@@ -57,7 +57,7 @@ def predict(file):
   array = model.predict(x)
   result = array[0]
   if result[0] > result[1]:
-    if result[0] > 0.001:
+    if result[0] > 0.01:
       print("Predicted answer: Buy")
       answer = 'buy'
       print(result)
@@ -67,13 +67,13 @@ def predict(file):
       answer = 'n/a'
       print(result)
   else:
-    if result[1] > 0.001:
+    if result[1] > 0.01:
       print("Predicted answer: Sell")
       answer = 'sell'
       print(result)
     else:
       print("Predicted answer: Not confident")
-      answer = 'n/a'
+      answer = 'sell'
       print(result)
 
   return answer
@@ -134,7 +134,6 @@ def analyze(pairs):
     plt.plot(smb, color="blue", linewidth=10, alpha=0.5)
     #plt.plot(smblong, color="black", linewidth=10, alpha=0.5)
     plt.axis('off')
-    plt.show()
     plt.savefig('live' +'.jpg', bbox_inches='tight')
 
     open_val.clear()
