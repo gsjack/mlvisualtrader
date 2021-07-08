@@ -10,7 +10,7 @@ img_width, img_height = 150, 150
 model_path = '../src/models/model.h5'
 weights_path = '../src/models/weights'
 model = load_model('C://mlvisualtrader//src//models//model.h5')
-test_path = '../data/validation'
+#test_path = '../data/validation'
 
 def predict(file):
   x = load_img(file, target_size=(img_width,img_height))
@@ -19,7 +19,7 @@ def predict(file):
   array = model.predict(x)
   result = array[0]
   if result[0] > result[1]:
-    if result[0] > 0.98:
+    if result[0] > 0.9:
       print("Predicted answer: Buy")
       answer = 'buy'
       print(result)
@@ -29,7 +29,7 @@ def predict(file):
       answer = 'n/a'
       print(result)
   else:
-    if result[1] > 0.98:
+    if result[1] > 0.9:
       print("Predicted answer: Sell")
       answer = 'sell'
       print(result)

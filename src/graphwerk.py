@@ -4,21 +4,7 @@ import mpl_finance
 import numpy as np
 import uuid
 
-# Input your csv file here with historical data
-def timeConversion(s):
-   if s[-2:] == "AM" :
-      if s[:2] == '12':
-          a = str('00' + s[2:8])
-      else:
-          a = s[:-2]
-   else:
-      if s[:2] == '12':
-          a = s[:-2]
-      else:
-          a = str(int(s[:2]) + 12) + s[2:8]
-   return a
-
-ad = genfromtxt(r'C:/mlvisualtrader/financial_data/Binance_BTCUSDT_1h.csv', delimiter=',' ,dtype=str)
+ad = genfromtxt(r'C:/mlvisualtrader/financial_data/Binance_BTCUSDT_1h_Backtest.csv', delimiter=',' ,dtype=str)
 ad = np.delete(ad,0,1)
 pd = np.flipud(ad)
 
@@ -36,6 +22,7 @@ def graphwerk(start, finish):
     close = []
     volume = []
     date = []
+    hlc3 = []
     for x in range(finish-start):
 
 # Below filtering is valid for eurusd.csv file. Other financial data files have different orders so you need to find out
@@ -45,44 +32,53 @@ def graphwerk(start, finish):
         high.append(float(pd[start][2]))
         low.append(float(pd[start][3]))
         close.append(float(pd[start][4]))
-        volume.append(float(pd[start][5]))
+        volume.append(float(pd[start][5])*100)
         date.append(pd[start][0])
+        hlc3temp = (float(pd[start][2]) + float(pd[start][3]) + float(pd[start][4]))/3
+        hlc3.append(hlc3temp)
         start = start + 1
 
     close_next = float(pd[finish][4])
-
-    sma = convolve_sma(close, 6)
+    sma = convolve_sma(hlc3, 7)
     smb = list(sma)
     diff = sma[-1] - sma[-2]
 
     for x in range(len(close)-len(smb)):
         smb.append(smb[-1]+diff)
 
-    smalong = convolve_sma(close, 12)
-    smblong = list(smalong)
-    #difflong = smalong[-1] - smalong[-2]
-
-    #for x in range(len(close)-len(smblong)):
-    #    smblong.append(smblong[-1]+difflong)
-
     fig = plt.figure(num=1, figsize=(3, 3), dpi=50, facecolor='w', edgecolor='k')
     dx = fig.add_subplot(111)
-    #mpl_finance.volume_overlay(ax, open, close, volume, width=0.4, colorup='b', colordown='b', alpha=1)
+    dx.grid(False)
+    dx.set_xticklabels([])
+    dx.set_yticklabels([])
+    dx.xaxis.set_visible(False)
+    dx.yaxis.set_visible(False)
+    dx.axis('off')
+    ax2 = dx.twinx()
+    a = mpl_finance.volume_overlay(ax2, open, close, volume, width=0.4, colorup='b', colordown='b', alpha=0)
+    ax2.add_collection(a)
+    ax2.grid(False)
+    ax2.set_xticklabels([])
+    ax2.set_yticklabels([])
+    ax2.xaxis.set_visible(False)
+    ax2.yaxis.set_visible(False)
+    ax2.axis('off')
     mpl_finance.candlestick2_ochl(dx,open, close, high, low, width=1.5, colorup='g', colordown='r', alpha=0.5)
 
     plt.autoscale()
+    plt.autoscale(ax2)
     plt.plot(smb, color="blue", linewidth=10, alpha=0.5)
     #plt.plot(smblong, color="black", linewidth=10, alpha=0.5)
     plt.axis('off')
     comp_ratio = close_next / close[-1]
     print(comp_ratio)
 
-    if close[-3]*1.01 < close_next and close[-2] < close_next and close[-1] < close_next:
+    if close_next/close[-1] > 1.01:
             print('last value: ' + str(close[-1]))
             print('next value: ' + str(close_next))
             print('buy')
             plt.savefig(buy_dir + str(uuid.uuid4()) +'.jpg', bbox_inches='tight')
-    elif close[-3]*1.01 > close_next and close[-2] > close_next and close[-1] > close_next:
+    elif close_next/close[-1]<0.99:
             print('last value: '+ str(close[-1]))
             print('next value: ' + str(close_next))
             print('sell')
@@ -101,6 +97,7 @@ def graphwerk(start, finish):
     volume.clear()
     high.clear()
     low.clear()
+    hlc3.clear()
     plt.cla()
     plt.clf()
 
@@ -112,5 +109,5 @@ iter = 0
 
 
 for x in range(len(pd)-4):
-   graphwerk(iter, iter+12)
+   graphwerk(iter, iter+12) #eigentlich nur 12. 13 zum check
    iter = iter + 2
