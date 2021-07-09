@@ -24,7 +24,7 @@ OSC_INDICATORS = ['MACD', 'Stoch.RSI', 'Mom'] # Indicators to use in Oscillator 
 OSC_THRESHOLD = 2 # Must be less or equal to number of items in OSC_INDICATORS 
 MA_INDICATORS = ['EMA10', 'EMA20'] # Indicators to use in Moving averages analysis
 MA_THRESHOLD = 2 # Must be less or equal to number of items in MA_INDICATORS 
-INTERVAL = Interval.INTERVAL_5_MINUTES #Timeframe for analysis
+INTERVAL = Interval.INTERVAL_1_HOUR #Timeframe for analysis
 
 EXCHANGE = 'BINANCE'
 SCREENER = 'CRYPTO'
@@ -96,7 +96,7 @@ def analyze(pairs):
     hlc3 = []      
     x = 0                                                 #KLINE_INTERVAL_1DAY
                                                                               #KLINE_INTERVAL_4HOUR
-    for kline in client.get_historical_klines_generator("BTCUSDT", Client.KLINE_INTERVAL_5MINUTE, "65 minutes ago UTC"):
+    for kline in client.get_historical_klines_generator("BTCUSDT", Client.KLINE_INTERVAL_1HOUR, "12 hours ago UTC"):
 
 
         if (x < 12):
