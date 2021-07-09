@@ -53,7 +53,7 @@ client = Client(access_key, secret_key)
 img_width, img_height = 150, 150
 model_path = '../src/models/model.h5'
 weights_path = '../src/models/weights'
-model = load_model('C://mlvisualtrader//src//models//model.h5')
+model = load_model(os.path.join('./src/models/', 'model.h5'))
 #test_path = '../data/validation'
 
 def predict(file):
