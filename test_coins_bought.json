@@ -2,10 +2,10 @@
     "BTCUSDT": {
         "symbol": "BTCUSDT",
         "orderid": 0,
-        "timestamp": 1625813645.627541,
-        "bought_at": "32907.24000000",
-        "volume": 0.000456,
+        "timestamp": 1625817911.158002,
+        "bought_at": "32769.99000000",
+        "volume": 0.000458,
         "stop_loss": -5,
-        "take_profit": 0.8
+        "take_profit": 1
     }
 }
