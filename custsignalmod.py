@@ -63,7 +63,7 @@ def predict(file):
   array = model.predict(x)
   result = array[0]
   if result[0] > result[2]:
-    if result[0] > 0.01:
+    if result[0] > 0.1:
       print("Predicted answer: Buy")
       answer = 'buy'
       print(result)
@@ -73,7 +73,7 @@ def predict(file):
       answer = 'n/a'
       print(result)
   else:
-    if result[1] > 0.01:
+    if result[2] > 0.1:
       print("Predicted answer: Sell")
       answer = 'sell'
       print(result)
@@ -94,9 +94,17 @@ def analyze(pairs):
     close_val = []
     volume2 = []    
     hlc3 = []      
-    x = 0                                                 #KLINE_INTERVAL_1DAY
+    x = 0                                
+    
+    try:
+        temp = client.get_historical_klines_generator("BTCUSDT", Client.KLINE_INTERVAL_5MINUTE, "1 hour ago UTC")
+    except Exception as e:
+        print("schnittstelle antwortetnicht:")
+
+    
+                     #KLINE_INTERVAL_1DAY
                                                                               #KLINE_INTERVAL_4HOUR
-    for kline in client.get_historical_klines_generator("BTCUSDT", Client.KLINE_INTERVAL_5MINUTE, "1 hour ago UTC"):
+    for kline in temp:
 
 
         if (x < 12):

@@ -18,8 +18,8 @@ def predict(file):
   x = np.expand_dims(x, axis=0)
   array = model.predict(x)
   result = array[0]
-  if result[0] > result[1]:
-    if result[0] > 0.001:
+  if result[0] > result[2]:
+    if result[0] > 0.1:
       print("Predicted answer: Buy")
       answer = 'buy'
       print(result)
@@ -29,7 +29,7 @@ def predict(file):
       answer = 'n/a'
       print(result)
   else:
-    if result[1] > 0.001:
+    if result[2] > 0.1:
       print("Predicted answer: Sell")
       answer = 'sell'
       print(result)
