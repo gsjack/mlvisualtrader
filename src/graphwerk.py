@@ -3,8 +3,37 @@ import matplotlib.pyplot as plt
 import mpl_finance
 import numpy as np
 import uuid
+import pandas as pd
+import ta
+from ta import add_all_ta_features
+from ta.utils import dropna
+from ta.volatility import BollingerBands
 
-ad = genfromtxt(r'C:/mlvisualtrader/financial_data/Binance_BTCUSDT_1h_Future.csv', delimiter=',' ,dtype=str)
+# Load datas
+df = pd.read_csv(r'C:\mlvisualtrader\financial_data\Binance_BTCUSDT_1h_Backtest.csv', sep=',')
+df = df.iloc[: , 1:]
+# Clean NaN values
+df = dropna(df)
+
+df["ema"] = ta.trend.EMAIndicator(df["Close"], window = 14, fillna = False).ema_indicator()
+df["sma"] = ta.trend.SMAIndicator(df["Close"], window = 14, fillna = False).sma_indicator()
+
+# Add bollinger band high indicator filling nans values
+df["bb_high_indicator"] = ta.volatility.bollinger_hband_indicator(
+    df["Close"], window=20, window_dev=2, fillna=True
+).bollinger_hband_indicator()
+
+# Add bollinger band low indicator filling nans values
+df["bb_low_indicator"] = ta.volatility.bollinger_lband_indicator(
+    df["Close"], window=20, window_dev=2, fillna=True
+).bollinger_lband_indicator()
+
+asd  = ta.volatility.bollinger_lband_indicator(
+    df["Close"], window=20, window_dev=2, fillna=True
+)
+df = df.to_csv(r'C:\mlvisualtrader\financial_data\Binance_BTCUSDT_1h_Backtest_with_indicators.csv')
+
+ad = genfromtxt(r'C:/mlvisualtrader/financial_data/Binance_BTCUSDT_1h_Backtest_with_indicators.csv', delimiter=',' ,dtype=str, skip_header=1)
 ad = np.delete(ad,0,1)
 pd = np.flipud(ad)
 
@@ -23,11 +52,17 @@ def graphwerk(start, finish):
     volume = []
     date = []
     hlc3 = []
+    bbupper = []
+    bblower = []
+    mySMA = []
+    myEMA = []
+
+
     for x in range(finish-start):
 
 # Below filtering is valid for eurusd.csv file. Other financial data files have different orders so you need to find out
 # what means open, high and close in their respective order.
-
+        start = start + 1
         open.append(float(pd[start][1]))
         high.append(float(pd[start][2]))
         low.append(float(pd[start][3]))
@@ -36,9 +71,13 @@ def graphwerk(start, finish):
         date.append(pd[start][0])
         hlc3temp = (float(pd[start][2]) + float(pd[start][3]) + float(pd[start][4]))/3
         hlc3.append(hlc3temp)
-        start = start + 1
-
+        myEMA.append(float(pd[start][6]))
+        mySMA.append(float(pd[start][7]))
+        bbupper.append(float(pd[start][8]))
+        bblower.append(float(pd[start][9]))
+        
     close_next = float(pd[finish][4])
+   
     sma = convolve_sma(hlc3, 7)
     smb = list(sma)
     diff = sma[-1] - sma[-2]
@@ -67,7 +106,12 @@ def graphwerk(start, finish):
 
     plt.autoscale()
     plt.autoscale(ax2)
-    plt.plot(smb, color="blue", linewidth=10, alpha=0.5)
+    plt.plot(smb, color="blue", linewidth=10, alpha=0.25)
+    plt.plot(bbupper, color="black", linewidth=10, alpha=0.25)
+    plt.plot(bblower, color="orange", linewidth=10, alpha=0.25)
+    plt.plot(myEMA, color="green", linewidth=10, alpha=0.25)
+    plt.plot(mySMA, color="yellow", linewidth=10, alpha=0.25)
+    
     #plt.plot(smblong, color="black", linewidth=10, alpha=0.5)
     plt.axis('off')
     comp_ratio = close_next / close[-1]
